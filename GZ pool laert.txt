@@ -1,0 +1,106 @@
+#!/bin/ksh -p
+ 
+########## Checking pool alert for all global zones ###############
+ 
+POOL_LOG="/tmp/pool.log.$$"
+FS_LOG="/tmp/fs.del1.log.$$"
+POOL_STATUS="/tmp/pool_status.log.$$"
+PING_LOG="/tmp/pinglog.$$"
+FLAG_DIR="/install/networker/data/flag_dir"
+ 
+PROD_SERV="/install/networker/data/flag_dir/production_server"
+INBOX="kupcwm@bp.com","chaswq@bp.com"; PAGER="susjms@bp.com","chaswq@bp.com","dilip.vuddaraju@uk.bp.com","ispsupportpager@uk.bp.com"
+ 
+OED="
+#burn \
+colossus \
+ethalion \
+glory \
+ocean \
+pioneer \
+slash \
+theseus \
+venerable \
+vengeance \
+dobbie \
+"
+ 
+for SERVER in $OED; do
+ 
+   if [ -f ${FLAG_DIR}/FS_check_${SERVER}.cfg ]; then #check for blackout
+        ping $SERVER >$PING_LOG #PING check
+        grep -i answer $PING_LOG >/dev/null
+ 
+        if [ $? -eq 1 ]; then
+ 
+                IP=`grep -i "$SERVER" /etc/hosts|grep 149.189.180|grep -v ^#|grep -v tyburn|awk '{print $1}'|sort -u`
+ 
+                rsh $SERVER -n -l root "uname -a" >/dev/null
+                if [ $? -eq 1 ]; then
+                        KEON="enabled"
+                else
+                        KEON="disabled"
+                fi
+ 
+                if [ "$KEON" == "enabled" ]; then
+                        su nsrdist -c "ssh $IP /sbin/zpool list" >$POOL_LOG
+                        su nsrdist -c "ssh $IP /usr/sbin/zoneadm list -icv" >$POOL_STATUS
+                else
+                        rsh $SERVER -n -l root "/sbin/zpool list" >$POOL_LOG
+                        rsh $SERVER -n -l root "/usr/sbin/zoneadm list -icv" >$POOL_STATUS
+                fi
+ 
+                cat $POOL_STATUS | grep -v NAME | awk '{ print $4 ":" $2 }' >$FS_LOG
+ 
+                cat $POOL_LOG | grep -v NAME | awk '{ print $5 " " $1 }'|while read output;
+                do
+                        POOLUSG=`echo $output | awk '{ print $1}' | cut -d'%' -f1`
+                        POOLNAME=`echo $output | awk '{ print $2 }'`
+ 
+                        if [ $POOLUSG -ge 80 ]; then
+                             echo "\n"$SERVER" : "$POOLNAME" : Pool Alert : "$POOLUSG"% " | mailx -s ""$SERVER" : "$POOLNAME" : Pool Alert : "$POOLUSG"%" $INBOX
+                        fi
+ 
+                        if [ $POOLUSG -ge 90 ]; then
+                             if grep -i $POOLNAME $PROD_SERV >/dev/null; then
+                                echo "\n"$SERVER" : "$POOLNAME" : Pool Alert : "$POOLUSG"% " | mailx -s ""$SERVER" : "$POOLNAME" : Pool Alert : "$POOLUSG"%" $PAGER
+                             fi
+                        fi
+ 
+                       #if [ $POOLUSG -ge 95 ]; then
+                       #     echo "\n"$SERVER" : "$POOLNAME" : Pool Alert : "$POOLUSG"% " | mailx -s ""$SERVER" : "$POOLNAME" : Pool Alert : "$POOLUSG"%" $PAGER
+                       #fi
+                 done
+ 
+                 for j in `cat $FS_LOG`
+                 do
+                         ZONEPATH=`echo $j |cut -d ":" -f1`
+                         CONTNAME=`echo $j |cut -d ":" -f2`
+ 
+                         if [ "$KEON" == "enabled" ]; then
+                                #CONTUSG=`su nsrdist -c "ssh $IP /usr/local/bin/bp_df -k $ZONEPATH" | grep -v Filesystem | awk '{ print $5}' | cut -d'%' -f1`
+                                CONTUSG=`su nsrdist -c "ssh $IP /usr/ucb/df -k $ZONEPATH" | grep -v Filesystem | awk '{ print $5}' | cut -d'%' -f1`
+                         else
+                                CONTUSG=`rsh $SERVER -n -l root "/usr/ucb/df -k $ZONEPATH" | grep -v Filesystem | awk '{ print $5}' | cut -d'%' -f1`
+                         fi
+ 
+                         if [ $CONTUSG -ge 80 ]; then
+                               echo "\n"$SERVER" : "$CONTNAME" : File System Alert : "$ZONEPATH" : "$CONTUSG"% "  | mailx -s ""$SERVER" : "$CONTNAME" : File System Alert : "$CONTUSG"%" $INBOX
+                         fi
+ 
+                         if [ $CONTUSG -ge 90 ]; then
+                              if grep -i $CONTNAME $PROD_SERV >/dev/null; then
+                                 echo "\n"$SERVER" : "$CONTNAME" : File System Alert : "$ZONEPATH" : "$CONTUSG"% "  | mailx -s ""$SERVER" : "$CONTNAME" : File System Alert : "$CONTUSG"%" $PAGER
+                              fi
+                         fi
+ 
+                        #if [ $CONTUSG -ge 95 ]; then
+                        #      echo "\n"$SERVER" : "$CONTNAME" : File System Alert : "$ZONEPATH" : "$CONTUSG"% "  | mailx -s ""$SERVER" : "$CONTNAME" : File System Alert : "$CONTUSG"%" $PAGER
+                        #fi
+ 
+                  done
+        fi
+else
+      echo "Touch "$FLAG_DIR"/FS_check_"$SERVER".cfg file to enable it" | mailx -s "FS check disabled for "$SERVER"" $INBOX
+fi
+done
