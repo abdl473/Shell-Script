@@ -1,0 +1,119 @@
+25th 
+
+cluster - 
+dev -12
+dr -16
+prod -70
+
+* sensitive data 
+* user monitoring ( ibm gardium)
+* navigator logs store in ibm
+
+Encrytion:
+
+1. Kerberos Implementation
+2. 
+
+abdul49m
+
+Gardium Ref:
+https://www.youtube.com/watch?v=nkrPSp6yJZM&list=PLJJnHFXpiMjXOkmj5C6iZVWlLczXjbzw3
+https://www.youtube.com/watch?v=Ybz59Np_0AQ
+http://www-01.ibm.com/support/docview.wss?uid=swg21515374
+https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=8&cad=rja&uact=8&ved=0ahUKEwj4zu-nkqjTAhVDySYKHSKsAnQQtwIIbTAH&url=https%
+3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DgxeVF_7rSl8&usg=AFQjCNG4RvEJfmVQPgEkDYlqUJdeGeHj5w&sig2=wQ0SG2uMv46YoOkPh07oig
+
+Requirement:
+
+Responsible for implementation and ongoing administration of Hadoop infrastructure. 
+Aligning with the platform engineering team to propose and deploy new hardware and software environments required for Hadoop and to 
+expand existing environments. 
+Working with application teams to setup new Hadoop users. This job includes setting up Linux users, User group creation, security, 
+testing HDFS, Hive, MapReduce, access for the new users. 
+Cluster maintenance as well as creation and removal of nodes using tools like Cloudera Manager Enterprise, AWS and other tools. 
+Performance tuning of Hadoop clusters, Kafka Clusters, Hadoop MapReduce routines, Hbase, Impala queries and Scala/Java Spark routines. 
+Screen Hadoop cluster job performances and capacity planning 
+Monitor Hadoop and Kafka cluster connectivity and security 
+------> Manage and review Hadoop log files. 
+------> File system management and monitoring. 
+----------> HDFS support and maintenance. 
+Diligently teaming with the infrastructure, network, database, application and business intelligence teams to guarantee high data 
+quality and availability. 
+Install operating system and Hadoop updates, patches, version upgrades when required. 
+Be able to troubleshoot issues with hive, Hbase, Kafka, spark /scala scripts to isolate/fix issues if infrastructure related 
+Be able to tune spark programs with appropriate parameters 
+Skills Required / Desirable: 
+Minimum 8+ Years of experience is required. 
+------> General operational expertise - good Linux troubleshooting skills, understanding of systems capacity, bottlenecks, basics of memory, CPU, OS, storage, and networks. 
+Hadoop skills like HBase, Hive, Sqoop, Impala, Spark, Kafka, Parquet etc. 
+Should be able to deploy Hadoop cluster, add and remove nodes, keep track of jobs, monitor critical parts of the cluster, configure 
+name-node high availability, schedule and configure it and take backups. 
+Good knowledge of Linux . 
+Familiarity with open source configuration management and deployment tools and Linux scripting. 
+Desirable : Knowledge of Troubleshooting Core Java Applications 
+*******************************************************************************
+
+Hue, hive, impala, kafka,shell scripting, cloudera navigator, gardium, log testing,Oozie
+
+Date : 19-04-17
+
+Clarifications :
+----------------
+-> Impala HUE UI
+-> Password check from CM
+
+-> SaveNameSpace location
+-> Hive config para set from Hue
+-> Differen btwn hive & impala
+-> Pig examples
+-> SLA
+-> Oozie demo
+-> Metastore access to other users
+-> Backup Hadoop service Databases
+-> Linux admin commands
+
+-> .bashrc, host.exclude, 
+-> set environmental path ( java alternatives)
+
+-> https://hadoop.apache.org/docs/r2.7.3/hadoop-project-dist/hadoop-hdfs/HDFSCommands.html
+
+JAVA verison mismatch fix:
+
+mkdir /usr/java
+cd /usr/java
+wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u60-b27/jdk-8u60-linux-x64.tar.gz
+update-alternatives --config java
+update-alternatives --install /usr/bin/java java /usr/java/jdk1.8.0_60/bin/java 20
+
+
+
+Discussion:
+-----------
+-> HUE WEb UI
+
+-> NN HA concepts
+
+Architure Diag : https://training-course-material.com/training/File:HadoopAdministration17.jpg
+
+-> NN HA demo
+
+Enbale HA : https://www.cloudera.com/documentation/enterprise/5-8-x/topics/cdh_hag_hdfs_ha_enabling.html#topic_2_3
+HA Validation
+
+-> NN Federation concepts
+
+http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/Federation.html
+
+-> HDFS Quotas
+
+https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HdfsQuotaAdminGuide.html
+
+-> HDFS Snapshot
+
+Snapshot concepts
+Enable Snapshot thorugh CLI
+Enable Snapshot through UI
+Snapshot scheduling
+https://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-hdfs/HdfsSnapshots.html
+
+
